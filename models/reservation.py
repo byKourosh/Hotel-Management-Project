@@ -2,8 +2,10 @@ from datetime import date
 from .validation import reservation_id_validator, date_validator, status_validator
 
 class Reservation:
-    def __init__(self, reservation_id: str, check_in_date: date, check_out_date: date, status: str):
+    def __init__(self, reservation_id: str, guest, room, check_in_date: date, check_out_date: date, status: str):
         self.reservationId = reservation_id
+        self.guest = guest
+        self.room = room
         self.checkInDate = check_in_date
         self.checkOutDate = check_out_date
         self.status = status
@@ -45,10 +47,15 @@ class Reservation:
         self.__status = value
 
     def calculateTotal(self):
-        pass
+        days = (self.checkOutDate - self.checkInDate).days
+        return days * self.room.pricePerNight
 
     def confirmReservation(self):
-        pass
+        self.status = "Confirmed"
 
     def cancelReservation(self):
-        pass
+        self.status = "Cancelled"
+        self.room.updateStatus("Available")
+
+    def __repr__(self):
+        return f"Reservation({self.reservationId}, {self.guest.name}, {self.room.roomNumber})"

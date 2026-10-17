@@ -51,3 +51,6 @@ class Guest:
 
     def updateProfile(self):
         pass
+
+    def __repr__(self):
+        return f"Guest({self.guestId}, {self.name})"
