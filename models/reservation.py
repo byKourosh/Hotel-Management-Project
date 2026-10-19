@@ -1,44 +1,44 @@
 from datetime import date
-from .validation import reservation_id_validator, date_validator, status_validator
+from tools.validation import reservation_id_validator, date_validator, status_validator
 
 class Reservation:
     def __init__(self, reservation_id: str, guest, room, check_in_date: date, check_out_date: date, status: str):
-        self.reservationId = reservation_id
+        self.reservation_id = reservation_id
         self.guest = guest
         self.room = room
-        self.checkInDate = check_in_date
-        self.checkOutDate = check_out_date
+        self.check_in_date = check_in_date
+        self.check_out_date = check_out_date
         self.status = status
 
     @property
-    def reservationId(self) -> str:
-        return self.__reservationId
+    def reservation_id(self):
+        return self.__reservation_id
 
-    @reservationId.setter
-    def reservationId(self, value: str):
+    @reservation_id.setter
+    def reservation_id(self, value: str):
         reservation_id_validator(value)
-        self.__reservationId = value
+        self.__reservation_id = value
 
     @property
-    def checkInDate(self) -> date:
-        return self.__checkInDate
+    def check_in_date(self):
+        return self.__check_in_date
 
-    @checkInDate.setter
-    def checkInDate(self, value: date):
+    @check_in_date.setter
+    def check_in_date(self, value: date):
         date_validator(value)
-        self.__checkInDate = value
+        self.__check_in_date = value
 
     @property
-    def checkOutDate(self) -> date:
-        return self.__checkOutDate
+    def check_out_date(self):
+        return self.__check_out_date
 
-    @checkOutDate.setter
-    def checkOutDate(self, value: date):
+    @check_out_date.setter
+    def check_out_date(self, value: date):
         date_validator(value)
-        self.__checkOutDate = value
+        self.__check_out_date = value
 
     @property
-    def status(self) -> str:
+    def status(self):
         return self.__status
 
     @status.setter
@@ -46,16 +46,16 @@ class Reservation:
         status_validator(value)
         self.__status = value
 
-    def calculateTotal(self):
-        days = (self.checkOutDate - self.checkInDate).days
-        return days * self.room.pricePerNight
+    def calculate_total(self):
+        days = (self.check_out_date - self.check_in_date).days
+        return days * self.room.price_per_night
 
-    def confirmReservation(self):
+    def confirm_reservation(self):
         self.status = "Confirmed"
 
-    def cancelReservation(self):
+    def cancel_reservation(self):
         self.status = "Cancelled"
-        self.room.updateStatus("Available")
+        self.room.update_status("Available")
 
     def __repr__(self):
-        return f"Reservation({self.reservationId}, {self.guest.name}, {self.room.roomNumber})"
+        return f"Reservation({self.reservation_id}, {self.guest.name}, {self.room.room_number})"

@@ -1,25 +1,25 @@
 from datetime import date
-from .validation import payment_id_validator, amount_validator, date_validator, payment_method_validator, status_validator
+from tools.validation import payment_id_validator, amount_validator, date_validator, payment_method_validator, status_validator
 
 class Payment:
     def __init__(self, payment_id: str, amount: float, payment_day: date, payment_method: str, status: str):
-        self.paymentId = payment_id
+        self.payment_id = payment_id
         self.amount = amount
-        self.paymentDay = payment_day
-        self.paymentMethod = payment_method
+        self.payment_day = payment_day
+        self.payment_method = payment_method
         self.status = status
 
     @property
-    def paymentId(self) -> str:
-        return self.__paymentId
+    def payment_id(self):
+        return self.__payment_id
 
-    @paymentId.setter
-    def paymentId(self, value: str):
+    @payment_id.setter
+    def payment_id(self, value: str):
         payment_id_validator(value)
-        self.__paymentId = value
+        self.__payment_id = value
 
     @property
-    def amount(self) -> float:
+    def amount(self):
         return self.__amount
 
     @amount.setter
@@ -28,25 +28,25 @@ class Payment:
         self.__amount = value
 
     @property
-    def paymentDay(self) -> date:
-        return self.__paymentDay
+    def payment_day(self):
+        return self.__payment_day
 
-    @paymentDay.setter
-    def paymentDay(self, value: date):
+    @payment_day.setter
+    def payment_day(self, value: date):
         date_validator(value)
-        self.__paymentDay = value
+        self.__payment_day = value
 
     @property
-    def paymentMethod(self) -> str:
-        return self.__paymentMethod
+    def payment_method(self):
+        return self.__payment_method
 
-    @paymentMethod.setter
-    def paymentMethod(self, value: str):
+    @payment_method.setter
+    def payment_method(self, value: str):
         payment_method_validator(value)
-        self.__paymentMethod = value
+        self.__payment_method = value
 
     @property
-    def status(self) -> str:
+    def status(self):
         return self.__status
 
     @status.setter
@@ -54,8 +54,8 @@ class Payment:
         status_validator(value)
         self.__status = value
 
-    def processPayment(self):
+    def process_payment(self):
         pass
 
-    def getPaymentDetails(self):
+    def get_payment_details(self):
         pass

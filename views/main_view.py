@@ -8,6 +8,7 @@ from views.room_view import open_room_window
 from views.reservation_view import open_reservation_window
 from views.employee_view import open_employee_window
 
+
 def run_hotel_app():
     guests_list = []
     rooms_list = []
@@ -41,6 +42,7 @@ def run_hotel_app():
     ).pack(pady=10)
 
     win.mainloop()
+
 
 if __name__ == "__main__":
     run_hotel_app()

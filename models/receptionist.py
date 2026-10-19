@@ -1,5 +1,5 @@
 from .employee import Employee
-from .validation import shift_validator
+from tools.validation import shift_validator
 
 class Receptionist(Employee):
     def __init__(self, employee_id: str, name: str, phone: str, salary: float, shift: str):
@@ -7,7 +7,7 @@ class Receptionist(Employee):
         self.shift = shift
 
     @property
-    def shift(self) -> str:
+    def shift(self):
         return self.__shift
 
     @shift.setter
@@ -15,15 +15,15 @@ class Receptionist(Employee):
         shift_validator(value)
         self.__shift = value
 
-    def checkIn(self, reservation):
+    def check_in(self, reservation):
         reservation.status = "Checked-In"
-        reservation.room.updateStatus("Occupied")
-        print(f"Guest checked in to room {reservation.room.roomNumber}")
+        reservation.room.update_status("Occupied")
+        print(f"Guest checked in to room {reservation.room.room_number}")
 
-    def checkOut(self, reservation):
+    def check_out(self, reservation):
         reservation.status = "Completed"
-        reservation.room.updateStatus("Available")
-        print(f"Guest checked out of room {reservation.room.roomNumber}")
+        reservation.room.update_status("Available")
+        print(f"Guest checked out of room {reservation.room.room_number}")
 
     def __repr__(self):
-        return f"Receptionist({self.employeeId}, {self.name})"
+        return f"Receptionist({self.employee_id}, {self.name})"

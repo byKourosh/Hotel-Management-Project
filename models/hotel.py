@@ -1,25 +1,25 @@
-from .validation import hotel_id_validator, name_validator, address_validator, phone_validator
+from tools.validation import hotel_id_validator, name_validator, address_validator, phone_validator
 from .room import Room
 
 class Hotel:
     def __init__(self, hotel_id: str, name: str, address: str, phone: str):
-        self.hotelId = hotel_id
+        self.hotel_id = hotel_id
         self.name = name
         self.address = address
         self.phone = phone
         self.__rooms = []
 
     @property
-    def hotelId(self) -> str:
-        return self.__hotelId
+    def hotel_id(self):
+        return self.__hotel_id
 
-    @hotelId.setter
-    def hotelId(self, value: str):
+    @hotel_id.setter
+    def hotel_id(self, value: str):
         hotel_id_validator(value)
-        self.__hotelId = value
+        self.__hotel_id = value
 
     @property
-    def name(self) -> str:
+    def name(self):
         return self.__name
 
     @name.setter
@@ -28,7 +28,7 @@ class Hotel:
         self.__name = value
 
     @property
-    def address(self) -> str:
+    def address(self):
         return self.__address
 
     @address.setter
@@ -37,7 +37,7 @@ class Hotel:
         self.__address = value
 
     @property
-    def phone(self) -> str:
+    def phone(self):
         return self.__phone
 
     @phone.setter
@@ -45,11 +45,11 @@ class Hotel:
         phone_validator(value)
         self.__phone = value
 
-    def addRoom(self, room: Room) -> None:
+    def add_room(self, room: Room):
         self.__rooms.append(room)
 
-    def getAvailableRooms(self) -> list:
-        return [room for room in self.__rooms if room.isAvailable()]
+    def get_available_rooms(self):
+        return [room for room in self.__rooms if room.is_available()]
 
-    def getHotelInfo(self) -> str:
-        return f"Hotel {self.name} (ID: {self.hotelId}) | Address: {self.address} | Phone: {self.phone}"
+    def get_hotel_info(self):
+        return f"Hotel {self.name} (ID: {self.hotel_id}) | Address: {self.address} | Phone: {self.phone}"

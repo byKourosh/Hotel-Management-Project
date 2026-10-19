@@ -12,7 +12,7 @@ def open_employee_window(parent, employees_list):
         for item in table.get_children():
             table.delete(item)
         for e in employees_list:
-            table.insert("", "end", values=(e.employeeId, e.name, e.phone, f"${e.salary:.2f}", e.shift))
+            table.insert("", "end", values=(e.employee_id, e.name, e.phone, f"${e.salary:.2f}", e.shift))
 
     def save_employee():
         try:

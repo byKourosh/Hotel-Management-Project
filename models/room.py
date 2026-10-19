@@ -1,41 +1,41 @@
-from .validation import room_number_validator, room_type_validator, price_validator, status_validator
+from tools.validation import room_number_validator, room_type_validator, price_validator, status_validator
 
 class Room:
     def __init__(self, room_number: str, room_type: str, price_per_night: float, status: str = "Available"):
-        self.roomNumber = room_number
-        self.roomType = room_type
-        self.pricePerNight = price_per_night
+        self.room_number = room_number
+        self.room_type = room_type
+        self.price_per_night = price_per_night
         self.status = status
 
     @property
-    def roomNumber(self) -> str:
-        return self.__roomNumber
+    def room_number(self):
+        return self.__room_number
 
-    @roomNumber.setter
-    def roomNumber(self, value: str):
+    @room_number.setter
+    def room_number(self, value: str):
         room_number_validator(value)
-        self.__roomNumber = value
+        self.__room_number = value
 
     @property
-    def roomType(self) -> str:
-        return self.__roomType
+    def room_type(self):
+        return self.__room_type
 
-    @roomType.setter
-    def roomType(self, value: str):
+    @room_type.setter
+    def room_type(self, value: str):
         room_type_validator(value)
-        self.__roomType = value
+        self.__room_type = value
 
     @property
-    def pricePerNight(self) -> float:
-        return self.__pricePerNight
+    def price_per_night(self):
+        return self.__price_per_night
 
-    @pricePerNight.setter
-    def pricePerNight(self, value: float):
+    @price_per_night.setter
+    def price_per_night(self, value: float):
         price_validator(value)
-        self.__pricePerNight = value
+        self.__price_per_night = value
 
     @property
-    def status(self) -> str:
+    def status(self):
         return self.__status
 
     @status.setter
@@ -43,12 +43,12 @@ class Room:
         status_validator(value)
         self.__status = value
 
-    def getRoomInfo(self) -> str:
-        return f"Room {self.roomNumber} | Type: {self.roomType} | Price: ${self.pricePerNight:.2f} | Status: {self.status}"
+    def get_room_info(self):
+        return f"Room {self.room_number} | Type: {self.room_type} | Price: ${self.price_per_night:.2f} | Status: {self.status}"
 
-    def isAvailable(self) -> bool:
+    def is_available(self):
         return self.status == "Available"
 
-    def updateStatus(self, new_status: str) -> None:
+    def update_status(self, new_status: str):
         self.status = new_status
-        print(f"Room {self.roomNumber} status updated to: {self.status}")
+        print(f"Room {self.room_number} status updated to: {self.status}")

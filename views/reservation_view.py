@@ -13,11 +13,14 @@ def open_reservation_window(parent, reservations_list, guests_list, rooms_list):
         for item in table.get_children():
             table.delete(item)
         for r in reservations_list:
-            table.insert("", "end", values=(r.reservationId, str(r.checkInDate), str(r.checkOutDate), r.status))
+            table.insert(
+                "", "end",
+                values=(r.reservation_id, str(r.check_in_date), str(r.check_out_date), r.status)
+            )
 
     def update_dropdowns():
-        guest_box['values'] = [g.guestId for g in guests_list]
-        room_box['values'] = [r.roomNumber for r in rooms_list]
+        guest_box['values'] = [g.guest_id for g in guests_list]
+        room_box['values'] = [r.room_number for r in rooms_list]
 
     def save_reservation():
         try:
@@ -33,8 +36,17 @@ def open_reservation_window(parent, reservations_list, guests_list, rooms_list):
             if check_out <= check_in:
                 raise ValueError("Check-out date must be after Check-in date")
 
-            selected_guest = next((g for g in guests_list if g.guestId == selected_guest_id), None)
-            selected_room = next((r for r in rooms_list if r.roomNumber == selected_room_id), None)
+            selected_guest = None
+            for g in guests_list:
+                if g.guest_id == selected_guest_id:
+                    selected_guest = g
+                    break
+
+            selected_room = None
+            for r in rooms_list:
+                if r.room_number == selected_room_id:
+                    selected_room = r
+                    break
 
             if selected_room.status != "Available":
                 raise ValueError("Room is not available")
@@ -49,7 +61,7 @@ def open_reservation_window(parent, reservations_list, guests_list, rooms_list):
             )
 
             reservations_list.append(new_res)
-            selected_room.updateStatus("Occupied")
+            selected_room.update_status("Occupied")
 
             refresh_table()
             update_dropdowns()
@@ -70,8 +82,8 @@ def open_reservation_window(parent, reservations_list, guests_list, rooms_list):
 
         res_id = table.item(selected[0], "values")[0]
         for res in reservations_list:
-            if res.reservationId == res_id:
-                res.cancelReservation()
+            if res.reservation_id == res_id:
+                res.cancel_reservation()
                 reservations_list.remove(res)
                 break
         refresh_table()
@@ -106,15 +118,22 @@ def open_reservation_window(parent, reservations_list, guests_list, rooms_list):
     status_entry.insert(0, "Confirmed")
     status_entry.grid(row=3, column=1, padx=5, pady=5)
 
-    tk.Button(form, text="Book Reservation", command=save_reservation).grid(row=4, column=0, columnspan=2, pady=10)
-    tk.Button(form, text="Cancel Selected", command=cancel_selected_reservation).grid(row=4, column=2, columnspan=2,
-                                                                                      pady=10)
+    tk.Button(form, text="Book Reservation", command=save_reservation).grid(
+        row=4, column=0, columnspan=2, pady=10
+    )
+    tk.Button(form, text="Cancel Selected", command=cancel_selected_reservation).grid(
+        row=4, column=2, columnspan=2, pady=10
+    )
 
-    columns = ("id", "checkin", "checkout", "status")
+    columns = ("id", "check_in", "check_out", "status")
     table = ttk.Treeview(window, columns=columns, show="headings")
 
+    table.heading("id", text="ID")
+    table.heading("check_in", text="Check In")
+    table.heading("check_out", text="Check Out")
+    table.heading("status", text="Status")
+
     for col in columns:
-        table.heading(col, text=col.capitalize())
         table.column(col, width=200)
 
     table.pack(fill="both", expand=True, padx=10, pady=10)

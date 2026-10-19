@@ -1,23 +1,23 @@
-from .validation import employee_id_validator, name_validator, phone_validator, salary_validator
+from tools.validation import employee_id_validator, name_validator, phone_validator, salary_validator
 
 class Employee:
     def __init__(self, employee_id: str, name: str, phone: str, salary: float):
-        self.employeeId = employee_id
+        self.employee_id = employee_id
         self.name = name
         self.phone = phone
         self.salary = salary
 
     @property
-    def employeeId(self) -> str:
-        return self.__employeeId
+    def employee_id(self):
+        return self.__employee_id
 
-    @employeeId.setter
-    def employeeId(self, value: str):
+    @employee_id.setter
+    def employee_id(self, value: str):
         employee_id_validator(value)
-        self.__employeeId = value
+        self.__employee_id = value
 
     @property
-    def name(self) -> str:
+    def name(self):
         return self.__name
 
     @name.setter
@@ -26,7 +26,7 @@ class Employee:
         self.__name = value
 
     @property
-    def phone(self) -> str:
+    def phone(self):
         return self.__phone
 
     @phone.setter
@@ -35,7 +35,7 @@ class Employee:
         self.__phone = value
 
     @property
-    def salary(self) -> float:
+    def salary(self):
         return self.__salary
 
     @salary.setter
@@ -43,10 +43,14 @@ class Employee:
         salary_validator(value)
         self.__salary = value
 
-    def getEmployeeInfo(self) -> str:
-        return f"Employee {self.name} (ID: {self.employeeId}) | Phone: {self.phone} | Salary: ${self.salary:.2f}"
+    def get_employee_info(self):
+        return f"Employee {self.name} (ID: {self.employee_id}) | Phone: {self.phone} | Salary: ${self.salary:.2f}"
 
-    def updateEmployeeInfo(self, **kwargs) -> None:
-        for key, value in kwargs.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
+    #ostad farmodid in ro hazf konam vali chon dakhel UML ke shoma tayid farmodid bodan,man be sorat sade tar neveshtameshon.
+    def update_employee_info(self, name=None, phone=None, salary=None):
+        if name:
+            self.name = name
+        if phone:
+            self.phone = phone
+        if salary:
+            self.salary = salary

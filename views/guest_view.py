@@ -12,7 +12,7 @@ def open_guest_window(parent, guests_list):
         for item in table.get_children():
             table.delete(item)
         for g in guests_list:
-            table.insert("", "end", values=(g.guestId, g.name, g.phoneNumber, g.email))
+            table.insert("", "end", values=(g.guest_id, g.name, g.phone_number, g.email))
 
     def save_guest():
         try:
