@@ -1,1 +1,1 @@
-A Python-based application designed to manage hotel operations using Object-Oriented Programming(OOP).This Project serves as the final project for my beginner Python course.
+A Python-based application designed to manage hotel operations using Object-Oriented Programming(OOP).This Project serves as the final project for my beginner Python course at MFT.
