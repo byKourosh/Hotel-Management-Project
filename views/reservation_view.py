@@ -1,10 +1,9 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import date
-from models.reservation import Reservation
 
 
-def open_reservation_window(parent, reservations_list, guests_list, rooms_list):
+def open_reservation_window(parent, app_controller):
     window = tk.Toplevel(parent)
     window.title("Reservation Management")
     window.geometry("900x550")
@@ -12,15 +11,22 @@ def open_reservation_window(parent, reservations_list, guests_list, rooms_list):
     def refresh_table():
         for item in table.get_children():
             table.delete(item)
-        for r in reservations_list:
+        reservations = app_controller.get_all_reservations()
+        for r in reservations:
             table.insert(
                 "", "end",
                 values=(r.reservation_id, str(r.check_in_date), str(r.check_out_date), r.status)
             )
 
     def update_dropdowns():
-        guest_box['values'] = [g.guest_id for g in guests_list]
-        room_box['values'] = [r.room_number for r in rooms_list]
+        guests = app_controller.get_all_guests()
+        rooms = app_controller.get_all_rooms()
+
+        # Only show available rooms in the dropdown
+        available_rooms = [r for r in rooms if r.status == "Available"]
+
+        guest_box['values'] = [g.guest_id for g in guests]
+        room_box['values'] = [r.room_number for r in available_rooms]
 
     def save_reservation():
         try:
@@ -36,40 +42,44 @@ def open_reservation_window(parent, reservations_list, guests_list, rooms_list):
             if check_out <= check_in:
                 raise ValueError("Check-out date must be after Check-in date")
 
+            # Find the actual Guest and Room objects via the controller
             selected_guest = None
-            for g in guests_list:
+            for g in app_controller.get_all_guests():
                 if g.guest_id == selected_guest_id:
                     selected_guest = g
                     break
 
             selected_room = None
-            for r in rooms_list:
+            for r in app_controller.get_all_rooms():
                 if r.room_number == selected_room_id:
                     selected_room = r
                     break
 
+            if not selected_guest or not selected_room:
+                raise ValueError("Guest or Room not found")
+
             if selected_room.status != "Available":
                 raise ValueError("Room is not available")
 
-            new_res = Reservation(
-                reservation_id=res_id_entry.get().strip(),
-                guest=selected_guest,
-                room=selected_room,
-                check_in_date=check_in,
-                check_out_date=check_out,
-                status=status_entry.get().strip()
+            success, message = app_controller.save_reservation(
+                res_id_entry.get().strip(),
+                selected_guest,
+                selected_room,
+                check_in,
+                check_out,
+                status_entry.get().strip()
             )
 
-            reservations_list.append(new_res)
-            selected_room.update_status("Occupied")
-
-            refresh_table()
-            update_dropdowns()
-            messagebox.showinfo("Success", "Reservation created!")
-
-            res_id_entry.delete(0, tk.END)
-            in_date_entry.delete(0, tk.END)
-            out_date_entry.delete(0, tk.END)
+            if success:
+                selected_room.update_status("Occupied")
+                refresh_table()
+                update_dropdowns()
+                messagebox.showinfo("Success", message)
+                res_id_entry.delete(0, tk.END)
+                in_date_entry.delete(0, tk.END)
+                out_date_entry.delete(0, tk.END)
+            else:
+                messagebox.showerror("Error", message)
 
         except ValueError as e:
             messagebox.showerror("Error", str(e))
@@ -81,14 +91,20 @@ def open_reservation_window(parent, reservations_list, guests_list, rooms_list):
             return
 
         res_id = table.item(selected[0], "values")[0]
-        for res in reservations_list:
+
+        # Find the reservation to free the room
+        for res in app_controller.get_all_reservations():
             if res.reservation_id == res_id:
                 res.cancel_reservation()
-                reservations_list.remove(res)
                 break
-        refresh_table()
-        update_dropdowns()
-        messagebox.showinfo("Success", "Reservation cancelled")
+
+        success, message = app_controller.cancel_reservation(res_id)
+        if success:
+            refresh_table()
+            update_dropdowns()
+            messagebox.showinfo("Success", message)
+        else:
+            messagebox.showerror("Error", message)
 
     form = tk.LabelFrame(window, text="Book Reservation (ID format: R12345)")
     form.pack(fill="x", padx=10, pady=10)

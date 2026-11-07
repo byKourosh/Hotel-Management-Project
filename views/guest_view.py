@@ -1,9 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from models.guest import Guest
 
-
-def open_guest_window(parent, guests_list):
+def open_guest_window(parent, app_controller):
     window = tk.Toplevel(parent)
     window.title("Guest Management")
     window.geometry("850x500")
@@ -11,28 +9,26 @@ def open_guest_window(parent, guests_list):
     def refresh_table():
         for item in table.get_children():
             table.delete(item)
-        for g in guests_list:
+        guests = app_controller.get_all_guests()
+        for g in guests:
             table.insert("", "end", values=(g.guest_id, g.name, g.phone_number, g.email))
 
     def save_guest():
-        try:
-            new_guest = Guest(
-                guest_id=id_entry.get().strip(),
-                name=name_entry.get().strip(),
-                phone_number=phone_entry.get().strip(),
-                email=email_entry.get().strip()
-            )
-            guests_list.append(new_guest)
+        success, message = app_controller.save_guest(
+            id_entry.get().strip(),
+            name_entry.get().strip(),
+            phone_entry.get().strip(),
+            email_entry.get().strip()
+        )
+        if success:
             refresh_table()
-            messagebox.showinfo("Success", "Guest added successfully!")
-
+            messagebox.showinfo("Success", message)
             id_entry.delete(0, tk.END)
             name_entry.delete(0, tk.END)
             phone_entry.delete(0, tk.END)
             email_entry.delete(0, tk.END)
-
-        except ValueError as e:
-            messagebox.showerror("Validation Error", str(e))
+        else:
+            messagebox.showerror("Error", message)
 
     form = tk.LabelFrame(window, text="Register Guest (ID format: G12345)")
     form.pack(fill="x", padx=10, pady=10)

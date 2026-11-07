@@ -1,9 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from models.receptionist import Receptionist
 
-
-def open_employee_window(parent, employees_list):
+def open_employee_window(parent, app_controller):
     window = tk.Toplevel(parent)
     window.title("Employee Management")
     window.geometry("850x500")
@@ -11,32 +9,32 @@ def open_employee_window(parent, employees_list):
     def refresh_table():
         for item in table.get_children():
             table.delete(item)
-        for e in employees_list:
+        employees = app_controller.get_all_employees()
+        for e in employees:
             table.insert("", "end", values=(e.employee_id, e.name, e.phone, f"${e.salary:.2f}", e.shift))
 
     def save_employee():
         try:
             salary_val = float(salary_entry.get().strip())
-
-            new_emp = Receptionist(
-                employee_id=id_entry.get().strip(),
-                name=name_entry.get().strip(),
-                phone=phone_entry.get().strip(),
-                salary=salary_val,
-                shift=shift_entry.get().strip()
+            success, message = app_controller.save_employee(
+                id_entry.get().strip(),
+                name_entry.get().strip(),
+                phone_entry.get().strip(),
+                salary_val,
+                shift_entry.get().strip()
             )
-            employees_list.append(new_emp)
-            refresh_table()
-            messagebox.showinfo("Success", "Receptionist added successfully!")
-
-            id_entry.delete(0, tk.END)
-            name_entry.delete(0, tk.END)
-            phone_entry.delete(0, tk.END)
-            salary_entry.delete(0, tk.END)
-            shift_entry.delete(0, tk.END)
-
-        except ValueError as e:
-            messagebox.showerror("Error", str(e))
+            if success:
+                refresh_table()
+                messagebox.showinfo("Success", message)
+                id_entry.delete(0, tk.END)
+                name_entry.delete(0, tk.END)
+                phone_entry.delete(0, tk.END)
+                salary_entry.delete(0, tk.END)
+                shift_entry.delete(0, tk.END)
+            else:
+                messagebox.showerror("Error", message)
+        except ValueError:
+            messagebox.showerror("Error", "Salary must be a valid number")
 
     form = tk.LabelFrame(window, text="Register Receptionist (ID format: E1234)")
     form.pack(fill="x", padx=10, pady=10)

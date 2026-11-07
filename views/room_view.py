@@ -1,9 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from models.room import Room
 
-
-def open_room_window(parent, rooms_list):
+def open_room_window(parent, app_controller):
     window = tk.Toplevel(parent)
     window.title("Room Management")
     window.geometry("850x500")
@@ -11,35 +9,30 @@ def open_room_window(parent, rooms_list):
     def refresh_table():
         for item in table.get_children():
             table.delete(item)
-        for r in rooms_list:
+        rooms = app_controller.get_all_rooms()
+        for r in rooms:
             table.insert("", "end", values=(r.room_number, r.room_type, f"${r.price_per_night:.2f}", r.status))
 
     def save_room():
         try:
             price = float(price_entry.get().strip())
-            new_num = num_entry.get().strip()
-
-            for r in rooms_list:
-                if r.room_number == new_num:
-                    raise ValueError("Room number already exists!")
-
-            new_room = Room(
-                room_number=new_num,
-                room_type=type_entry.get().strip(),
-                price_per_night=price,
-                status=status_entry.get().strip()
+            success, message = app_controller.save_room(
+                num_entry.get().strip(),
+                type_entry.get().strip(),
+                price,
+                status_entry.get().strip()
             )
-            rooms_list.append(new_room)
-            refresh_table()
-            messagebox.showinfo("Success", "Room added successfully!")
-
-            num_entry.delete(0, tk.END)
-            type_entry.delete(0, tk.END)
-            price_entry.delete(0, tk.END)
-            status_entry.delete(0, tk.END)
-
-        except ValueError as e:
-            messagebox.showerror("Error", str(e))
+            if success:
+                refresh_table()
+                messagebox.showinfo("Success", message)
+                num_entry.delete(0, tk.END)
+                type_entry.delete(0, tk.END)
+                price_entry.delete(0, tk.END)
+                status_entry.delete(0, tk.END)
+            else:
+                messagebox.showerror("Error", message)
+        except ValueError:
+            messagebox.showerror("Error", "Price must be a valid number")
 
     form = tk.LabelFrame(window, text="Add Room")
     form.pack(fill="x", padx=10, pady=10)
